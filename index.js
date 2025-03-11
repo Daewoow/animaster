@@ -1,5 +1,96 @@
 addListeners();
 
+function animaster() {
+    function fadeIn(element, duration) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+
+    function fadeOut(element, duration) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
+    function move(element, duration, translation) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.style.transform = getTransform(translation, null);
+    }
+
+    function scale(element, duration, ratio) {
+        element.style.transitionDuration = `${duration}ms`;
+        element.style.transform = getTransform(null, ratio);
+    }
+
+    function getTransform(translation, ratio) {
+        const result = [];
+        if (translation) {
+            result.push(`translate(${translation.x}px,${translation.y}px)`);
+        }
+        if (ratio) {
+            result.push(`scale(${ratio})`);
+        }
+        return result.join(' ');
+    }
+
+    function moveAndHide(element, duration) {
+        const moveDuration = duration * 2 / 5;
+        const fadeDuration = duration * 3 / 5;
+
+        move(element, moveDuration, { x: 100, y: 20 });
+        setTimeout(() => fadeOut(element, fadeDuration), moveDuration);
+    }
+
+    function showAndHide(element, duration) {
+        const stepDuration = duration / 3;
+
+        fadeIn(element, stepDuration);
+        setTimeout(() => fadeOut(element, stepDuration), stepDuration * 2);
+    }
+
+    function heartBeating(element) {
+        let intervalId = setInterval(() => {
+            scale(element, 500, 1.4);
+            setTimeout(() => scale(element, 500, 1), 500);
+        }, 1000);
+
+        return {
+            stop: () => clearInterval(intervalId)
+        };
+    }
+
+    function resetFadeIn(element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('show');
+        element.classList.add('hide');
+    }
+
+    function resetFadeOut(element) {
+        element.style.transitionDuration = null;
+        element.classList.remove('hide');
+        element.classList.add('show');
+    }
+
+    function resetMoveAndScale(element) {
+        element.style.transitionDuration = null;
+        element.style.transform = null;
+    }
+
+    return {
+        fadeIn,
+        fadeOut,
+        move,
+        scale,
+        moveAndHide,
+        showAndHide,
+        heartBeating,
+        resetFadeIn,
+        resetFadeOut,
+        resetMoveAndScale
+    };
+}
+
 function addListeners() {
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
@@ -18,39 +109,20 @@ function addListeners() {
             const block = document.getElementById('scaleBlock');
             scale(block, 1000, 1.25);
         });
-}
 
-/**
- * Блок плавно появляется из прозрачного.
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- */
-function fadeIn(element, duration) {
-    element.style.transitionDuration =  `${duration}ms`;
-    element.classList.remove('hide');
-    element.classList.add('show');
-}
+    let heartBeatingAnimation;
+    document.getElementById('heartBeatingPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('heartBeatingBlock');
+            heartBeatingAnimation = animaster().heartBeating(block);
+        });
 
-/**
- * Функция, передвигающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param translation — объект с полями x и y, обозначающими смещение блока
- */
-function move(element, duration, translation) {
-    element.style.transitionDuration = `${duration}ms`;
-    element.style.transform = getTransform(translation, null);
-}
-
-/**
- * Функция, увеличивающая/уменьшающая элемент
- * @param element — HTMLElement, который надо анимировать
- * @param duration — Продолжительность анимации в миллисекундах
- * @param ratio — во сколько раз увеличить/уменьшить. Чтобы уменьшить, нужно передать значение меньше 1
- */
-function scale(element, duration, ratio) {
-    element.style.transitionDuration =  `${duration}ms`;
-    element.style.transform = getTransform(null, ratio);
+    document.getElementById('heartBeatingStop')
+        .addEventListener('click', function () {
+            if (heartBeatingAnimation) {
+                heartBeatingAnimation.stop();
+            }
+        });
 }
 
 function getTransform(translation, ratio) {
