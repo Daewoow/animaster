@@ -92,24 +92,57 @@ function animaster() {
 }
 
 function addListeners() {
+    // fadeIn
     document.getElementById('fadeInPlay')
         .addEventListener('click', function () {
             const block = document.getElementById('fadeInBlock');
-            fadeIn(block, 5000);
+            animaster().fadeIn(block, 5000);
         });
 
+    // fadeOut
+    document.getElementById('fadeOutPlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('fadeOutBlock');
+            animaster().fadeOut(block, 5000);
+        });
+
+    // move
     document.getElementById('movePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('moveBlock');
-            move(block, 1000, {x: 100, y: 10});
+            animaster().move(block, 1000, { x: 100, y: 10 });
         });
 
+    // scale
     document.getElementById('scalePlay')
         .addEventListener('click', function () {
             const block = document.getElementById('scaleBlock');
-            scale(block, 1000, 1.25);
+            animaster().scale(block, 1000, 1.25);
         });
 
+    // moveAndHide
+    document.getElementById('moveAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().moveAndHide(block, 5000);
+        });
+
+    // Reset moveAndHide
+    document.getElementById('moveAndHideReset')
+        .addEventListener('click', function () {
+            const block = document.getElementById('moveAndHideBlock');
+            animaster().resetFadeIn(block);
+            animaster().resetMoveAndScale(block);
+        });
+
+    // showAndHide
+    document.getElementById('showAndHidePlay')
+        .addEventListener('click', function () {
+            const block = document.getElementById('showAndHideBlock');
+            animaster().showAndHide(block, 3000);
+        });
+
+    // heartBeating
     let heartBeatingAnimation;
     document.getElementById('heartBeatingPlay')
         .addEventListener('click', function () {
